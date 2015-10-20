@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Travel Memoirs</string>
 
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_memoir_item">MemoirItem</string>
+    <string name="title_activity_memoir_details">MemoirDetails</string>
+    <string name="no_description">No description</string>
 </resources>
