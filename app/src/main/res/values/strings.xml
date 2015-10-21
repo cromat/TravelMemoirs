@@ -5,4 +5,9 @@
     <string name="title_activity_memoir_item">MemoirItem</string>
     <string name="title_activity_memoir_details">MemoirDetails</string>
     <string name="no_description">No description</string>
+    <string name="title_activity_login">Login</string>
+
+    <!-- Google Button text -->
+    <string name="btn_logout_from_google">Logout from Google</string>
+    <string name="btn_revoke_access">Revoke Access</string>
 </resources>

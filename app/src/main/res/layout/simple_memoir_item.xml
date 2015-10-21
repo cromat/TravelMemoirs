@@ -40,6 +40,8 @@
     <RatingBar
         android:id="@+id/memoir_item_rating"
         android:isIndicator="true"
+        style="?android:attr/ratingBarStyleSmall"
+        android:numStars="5"
         android:layout_width="160dp"
         android:layout_height="30dp"
         android:layout_below="@+id/memoir_item_thumbnail"/>

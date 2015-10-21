@@ -20,6 +20,7 @@
         android:id="@+id/memoir_detail_rating"
         android:layout_width="150dp"
         android:layout_height="20dp"
+        android:numStars="5"
         android:layout_below="@+id/memoir_detail_video"
         android:layout_alignParentLeft="true"
         />
