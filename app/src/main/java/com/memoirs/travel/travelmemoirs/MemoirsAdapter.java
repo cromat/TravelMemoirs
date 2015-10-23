@@ -13,9 +13,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.TooManyListenersException;
 
 /**
  * Created by mat on 19.10.2015..
@@ -29,9 +32,7 @@ public class MemoirsAdapter extends RecyclerView.Adapter<MemoirsAdapter.MemoirsV
 
     private static List<Memoir> mMemoirs;
 
-    public MemoirsAdapter(List<Memoir> list){
-        this.mMemoirs = list;
-    }
+
 
     @Override
     public int getItemCount() {
@@ -44,15 +45,23 @@ public class MemoirsAdapter extends RecyclerView.Adapter<MemoirsAdapter.MemoirsV
         return new MemoirsViewHolder(v);
     }
 
+    public MemoirsAdapter(List<Memoir> list){
+        this.mMemoirs = list;
+    }
+
     @Override
     public void onBindViewHolder(MemoirsViewHolder memoirsViewHolder, int i) {
         //TODO: Download thumbnaila
+        //memoirsViewHolder.memoirItemThumbnail.setImageDrawable(mMemoirs.get(i).getMemoirThumbnail());
         memoirsViewHolder.memoirItemTitle.setText(mMemoirs.get(i).getMemoirTitle());
         memoirsViewHolder.memoirItemDescription.setText(mMemoirs.get(i).getMemoirDescription());
         memoirsViewHolder.memoirItemRating.setRating(mMemoirs.get(i).getMemoirRating());
         memoirsViewHolder.memoirItemLocation.setText(mMemoirs.get(i).getMemoirLocation().getCity()
                 + ", " + mMemoirs.get(i).getMemoirLocation().getCountry());
-        memoirsViewHolder.memoirItemDate.setText(mMemoirs.get(i).getMemoirDate().toString());
+        String date = new SimpleDateFormat("dd.MM.yyyy").format(mMemoirs.get(i).getMemoirDate());
+        memoirsViewHolder.memoirItemDate.setText(date);
+
+
     }
 
     //Klasa za prikaz pojedinog memoara u RecyclerView listi
@@ -70,6 +79,7 @@ public class MemoirsAdapter extends RecyclerView.Adapter<MemoirsAdapter.MemoirsV
         public MemoirsViewHolder(View view){
             super(view);
 
+            view.setOnClickListener(this);
             memoirItemThumbnail = (ImageView)view.findViewById(R.id.memoir_item_thumbnail);
             memoirItemTitle = (TextView)view.findViewById(R.id.memoir_item_title);
             memoirItemDescription = (TextView)view.findViewById(R.id.memoir_item_description);
@@ -81,9 +91,11 @@ public class MemoirsAdapter extends RecyclerView.Adapter<MemoirsAdapter.MemoirsV
 
         @Override
         public void onClick(View v) {
+            Toast.makeText(v.getContext(),"klinutoooo",Toast.LENGTH_LONG).show();
             Intent intent = new Intent(v.getContext(), MemoirDetails.class);
-            intent.putExtra("memoir",mMemoirs.get(getPosition()));
+            intent.putExtra("memoir",mMemoirs.get(getAdapterPosition()));
             context.startActivity(intent);
         }
     }
+
 }

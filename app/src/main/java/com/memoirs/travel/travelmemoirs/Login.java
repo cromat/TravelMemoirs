@@ -18,6 +18,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.SignInButton;
@@ -27,11 +31,21 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 
-import java.io.InputStream;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+//TODO: Dodati Login with Facebook
 
 public class Login extends Activity implements View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+
+    private static final String LOG_TAG = Login.class.getSimpleName();
 
     private static final int RC_SIGN_IN = 0;
     // Logcat tag
@@ -42,6 +56,9 @@ public class Login extends Activity implements View.OnClickListener,
 
     // Google client to interact with Google API
     private GoogleApiClient mGoogleApiClient;
+
+    private OnlineDbHelper onlineDb;
+
 
     /**
      * A flag indicating that a PendingIntent is in progress and prevents us
@@ -54,10 +71,8 @@ public class Login extends Activity implements View.OnClickListener,
     private ConnectionResult mConnectionResult;
 
     private SignInButton btnSignIn;
-    private Button btnSignOut, btnRevokeAccess;
-    private ImageView imgProfilePic;
-    private TextView txtName, txtEmail;
-    private LinearLayout llProfileLayout;
+
+    Person person;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,17 +80,10 @@ public class Login extends Activity implements View.OnClickListener,
         setContentView(R.layout.activity_login);
 
         btnSignIn = (SignInButton) findViewById(R.id.btn_sign_in);
-        btnSignOut = (Button) findViewById(R.id.btn_sign_out);
-        btnRevokeAccess = (Button) findViewById(R.id.btn_revoke_access);
-        imgProfilePic = (ImageView) findViewById(R.id.imgProfilePic);
-        txtName = (TextView) findViewById(R.id.txtName);
-        txtEmail = (TextView) findViewById(R.id.txtEmail);
-        llProfileLayout = (LinearLayout) findViewById(R.id.llProfile);
+        onlineDb = new OnlineDbHelper();
 
         // Button click listeners
         btnSignIn.setOnClickListener(this);
-        btnSignOut.setOnClickListener(this);
-        btnRevokeAccess.setOnClickListener(this);
 
         // Initializing google plus api client
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -98,7 +106,7 @@ public class Login extends Activity implements View.OnClickListener,
 
     /**
      * Button on click listener
-     * */
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -106,20 +114,12 @@ public class Login extends Activity implements View.OnClickListener,
                 // Signin button clicked
                 signInWithGplus();
                 break;
-            case R.id.btn_sign_out:
-                // Signout button clicked
-                signOutFromGplus();
-                break;
-            case R.id.btn_revoke_access:
-                // Revoke access button clicked
-                revokeGplusAccess();
-                break;
         }
     }
 
     /**
      * Sign-in into google
-     * */
+     */
     private void signInWithGplus() {
         if (!mGoogleApiClient.isConnecting()) {
             mSignInClicked = true;
@@ -129,7 +129,7 @@ public class Login extends Activity implements View.OnClickListener,
 
     /**
      * Sign-out from google
-     * */
+     */
     private void signOutFromGplus() {
         if (mGoogleApiClient.isConnected()) {
             Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
@@ -141,7 +141,7 @@ public class Login extends Activity implements View.OnClickListener,
 
     /**
      * Revoking access from google
-     * */
+     */
     private void revokeGplusAccess() {
         if (mGoogleApiClient.isConnected()) {
             Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
@@ -160,7 +160,7 @@ public class Login extends Activity implements View.OnClickListener,
 
     /**
      * Method to resolve any signin errors
-     * */
+     */
     private void resolveSignInError() {
         if (mConnectionResult.hasResolution()) {
             try {
@@ -217,7 +217,7 @@ public class Login extends Activity implements View.OnClickListener,
         Toast.makeText(this, "User is connected!", Toast.LENGTH_LONG).show();
 
         // Get user's information
-        getProfileInformation();
+        person = getPerson();
 
         // Update the UI after signin
         updateUI(true);
@@ -232,11 +232,12 @@ public class Login extends Activity implements View.OnClickListener,
 
     /**
      * Fetching user's information name, email, profile pic
-     * */
-    private void getProfileInformation() {
+     */
+    private Person getPerson() {
+        Person currentPerson = null;
         try {
             if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
-                Person currentPerson = Plus.PeopleApi
+                currentPerson = Plus.PeopleApi
                         .getCurrentPerson(mGoogleApiClient);
 
                 String personName = currentPerson.getDisplayName();
@@ -244,12 +245,9 @@ public class Login extends Activity implements View.OnClickListener,
                 String personGooglePlusProfile = currentPerson.getUrl();
                 String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
 
-                Log.d(TAG, "NameIsus: " + personName + ", plusProfile: "
+                Log.d(TAG, "Name: " + personName + ", plusProfile: "
                         + personGooglePlusProfile + ", email: " + email
                         + ", Image: " + personPhotoUrl);
-
-                txtName.setText(personName);
-                txtEmail.setText(email);
 
                 // by default the profile url gives 50x50 px image only
                 // we can replace the value with whatever dimension we want by
@@ -258,7 +256,8 @@ public class Login extends Activity implements View.OnClickListener,
                         personPhotoUrl.length() - 2)
                         + PROFILE_PIC_SIZE;
 
-                new LoadProfileImage(imgProfilePic).execute(personPhotoUrl);
+                //new LoadProfileImage(imgProfilePic).execute(personPhotoUrl);
+
 
             } else {
                 Toast.makeText(getApplicationContext(),
@@ -267,11 +266,16 @@ public class Login extends Activity implements View.OnClickListener,
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return currentPerson;
+    }
+
+    private String getPersonEmail() {
+        return Plus.AccountApi.getAccountName(mGoogleApiClient);
     }
 
     /**
      * Background Async task to load user profile picture from url
-     * */
+     */
     private class LoadProfileImage extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
 
@@ -299,18 +303,21 @@ public class Login extends Activity implements View.OnClickListener,
 
     /**
      * Updating the UI, showing/hiding buttons and profile layout
-     * */
+     */
     private void updateUI(boolean isSignedIn) {
         if (isSignedIn) {
-            btnSignIn.setVisibility(View.GONE);
-            btnSignOut.setVisibility(View.VISIBLE);
-            btnRevokeAccess.setVisibility(View.VISIBLE);
-            llProfileLayout.setVisibility(View.VISIBLE);
+            //TODO: check if user is already in database
+            String email = getPersonEmail();
+            String photoUrl = person.getImage().getUrl();
+            photoUrl = photoUrl.substring(0,
+                    photoUrl.length() - 2);
+
+            onlineDb.addUserToDatabase(email, photoUrl);
+
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
         } else {
             btnSignIn.setVisibility(View.VISIBLE);
-            btnSignOut.setVisibility(View.GONE);
-            btnRevokeAccess.setVisibility(View.GONE);
-            llProfileLayout.setVisibility(View.GONE);
+
         }
     }
 
@@ -335,4 +342,5 @@ public class Login extends Activity implements View.OnClickListener,
 
         return super.onOptionsItemSelected(item);
     }
+
 }

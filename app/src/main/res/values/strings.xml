@@ -10,4 +10,7 @@
     <!-- Google Button text -->
     <string name="btn_logout_from_google">Logout from Google</string>
     <string name="btn_revoke_access">Revoke Access</string>
+    <string name="title_activity_create_memoir">CreateMemoir</string>
+    <string name="title_autoplay_preference">Autoplay Videos</string>
+    <string name="title_savetoexternal_preference">Save to external storage</string>
 </resources>

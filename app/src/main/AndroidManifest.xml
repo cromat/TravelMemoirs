@@ -9,8 +9,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
-
     <application
+        android:name=".OnlineDbContoller"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -36,7 +36,15 @@
             android:name=".Login"
             android:label="@string/title_activity_login" >
         </activity>
-
+        <activity
+            android:name=".CreateMemoir"
+            android:label="@string/title_activity_create_memoir"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity android:name=".SettingsActivity" >
+        </activity>
+        <activity android:name=".CustomPhotoGalleryActivity" >
+        </activity>
     </application>
 
 </manifest>

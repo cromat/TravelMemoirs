@@ -1,6 +1,7 @@
 package com.memoirs.travel.travelmemoirs;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
 import java.io.Serializable;
@@ -10,7 +11,8 @@ import java.util.Date;
  * Created by mat on 19.10.2015..
  */
 public class Memoir implements Serializable{
-    private Bitmap memoirThumbnail;
+    private int id;
+    private String memoirThumbnail;
     private String memoirTitle;
     private String memoirDescription;
     private float memoirRating;
@@ -39,7 +41,7 @@ public class Memoir implements Serializable{
         this.memoirDate = memoir.memoirDate;
     }
 
-    public Memoir(Bitmap memoirThumbnail, String memoirTitle, String memoirDescription,
+    public Memoir(String memoirThumbnail, String memoirTitle, String memoirDescription,
                   float memoirRating, String city, String country,Date date){
         super();
         this.memoirThumbnail = memoirThumbnail;
@@ -50,7 +52,7 @@ public class Memoir implements Serializable{
         this.memoirDate =  date;
     }
 
-    public Memoir(Bitmap memoirThumbnail, String memoirTitle, String memoirDescription,
+    public Memoir(String memoirThumbnail, String memoirTitle, String memoirDescription,
                   float memoirRating, Memoir.MemoirLocation location,Date date){
         super();
         this.memoirThumbnail = memoirThumbnail;
@@ -63,6 +65,10 @@ public class Memoir implements Serializable{
 
     //Getteri i setteri klase memoir
 
+    public int getId() {
+        return id;
+    }
+
     public Date getMemoirDate() {
         return memoirDate;
     }
@@ -71,11 +77,11 @@ public class Memoir implements Serializable{
         this.memoirDate = memoirDate;
     }
 
-    public Bitmap getMemoirThumbnail() {
+    public String getMemoirThumbnail() {
         return memoirThumbnail;
     }
 
-    public void setMemoirThumbnail(Bitmap memoirThumbnail) {
+    public void setMemoirThumbnail(String memoirThumbnail) {
         this.memoirThumbnail = memoirThumbnail;
     }
 
@@ -113,7 +119,7 @@ public class Memoir implements Serializable{
 
     //Deklaracija klase MemoirLocation
 
-    public static class MemoirLocation{
+    public static class MemoirLocation implements Serializable{
         private String city;
         private String country;
 

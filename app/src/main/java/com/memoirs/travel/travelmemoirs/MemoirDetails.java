@@ -10,6 +10,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import java.text.SimpleDateFormat;
+
 
 public class MemoirDetails extends ActionBarActivity {
 
@@ -42,9 +44,11 @@ public class MemoirDetails extends ActionBarActivity {
 
         Intent intent = getIntent();
         memoir = (Memoir)intent.getSerializableExtra("memoir");
-        memoirDetailThumbnail.setImageBitmap(memoir.getMemoirThumbnail());
+        //TODO: Get drawable from path
+        //memoirDetailThumbnail.setImageDrawable(memoir.getMemoirThumbnail());
         memoirDetailRating.setRating(memoir.getMemoirRating());
-        memoirDetailDate.setText(memoir.getMemoirDate().toString());
+        String date = new SimpleDateFormat("dd.MM.yyyy").format(memoir.getMemoirDate());
+        memoirDetailDate.setText(date);
         memoirDetailDescription.setText(memoir.getMemoirDescription());
         //TODO: set video
     }
