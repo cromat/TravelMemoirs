@@ -1,10 +1,12 @@
 package com.memoirs.travel.travelmemoirs;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.support.multidex.MultiDex;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -25,13 +27,20 @@ import android.widget.ListView;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 
+
+
 import java.util.ArrayList;
 import java.util.Date;
 
 
 public class MainActivity extends ActionBarActivity {
 
-    //Test objekt
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(newBase);
+        MultiDex.install(newBase);
+    }
+//Test objekt
 
     private String memoirTitle = "Naslov Videa";
     private String memoirDescription = "Ovo je jedan zanimljivi video iz Bosne.";
@@ -74,7 +83,6 @@ public class MainActivity extends ActionBarActivity {
         Memoir memoir = new Memoir(memoirThumbnail, memoirTitle, memoirDescription, memoirRating, memoirLocation, memoirDate);
         mMemoirsList.add(memoir);
 
-
         mRecyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -92,7 +100,7 @@ public class MainActivity extends ActionBarActivity {
        stiskanac.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), Login.class));
+                startActivity(new Intent(getApplicationContext(), CreateMemoir.class));
             }
         });
 
@@ -188,6 +196,7 @@ public class MainActivity extends ActionBarActivity {
             startActivity(new Intent(getApplicationContext(), Login.class));
         }
     }
+
 
 }
 
