@@ -1,6 +1,6 @@
 package com.memoirs.travel.travelmemoirs;
 
-
+/*
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -31,8 +31,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.bytedeco.javacv.Frame;
-import org.bytedeco.javacv.FFmpegFrameRecorder;
 
 public class RecordActivity extends Activity implements OnClickListener {
 
@@ -528,4 +526,4 @@ public class RecordActivity extends Activity implements OnClickListener {
             btnRecorderControl.setText("Start");
         }
     }
-}
+}*/

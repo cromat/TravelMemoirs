@@ -24,15 +24,15 @@
 
 -keep @org.bytedeco.javacpp.annotation.Platform public class *
 
--keepclasseswithmembernames class * {
-    @org.bytedeco.* <fields>;
-}
+#-keepclasseswithmembernames class * {
+#    @org.bytedeco.* <fields>;
+#}
 
--keepclasseswithmembernames class * {
-    @org.bytedeco.* <methods>;
-}
+#-keepclasseswithmembernames class * {
+#    @org.bytedeco.* <methods>;
+#}
 
--keepattributes EnclosingMethod
+#-keepattributes EnclosingMethod
 -keep @interface org.bytedeco.javacpp.annotation.*,javax.inject.*
 
 -keepattributes *Annotation*, Exceptions, Signature, Deprecated, SourceFile, SourceDir, LineNumberTable, LocalVariableTable, LocalVariableTypeTable, Synthetic, EnclosingMethod, RuntimeVisibleAnnotations, RuntimeInvisibleAnnotations, RuntimeVisibleParameterAnnotations, RuntimeInvisibleParameterAnnotations, AnnotationDefault, InnerClasses

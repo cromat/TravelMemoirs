@@ -38,7 +38,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(newBase);
-        MultiDex.install(newBase);
+        MultiDex.install(this);
     }
 //Test objekt
 
